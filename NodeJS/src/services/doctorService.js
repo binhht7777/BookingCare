@@ -53,15 +53,31 @@ let getAllDoctorsService = () => {
     })
 }
 
+let checkRequireFields = (inputData) => {
+    let arr = ['doctorId', 'contentHTML', 'contentMarkdown', 'action'
+        , 'selectedPrice', 'selectedPayment', 'selectedProvince', 'specialtyId'];
+    let isValid = true;
+    let element = '';
+    for (let i = 0; i < arr.length; i++) {
+        if (!inputData[arr[i]]) {
+            isValid = false;
+            element = arr[i];
+            break;
+        }
+    }
+    return {
+        isValid: isValid,
+        element: element,
+    }
+}
 let saveInforDoctorService = (inputData) => {
     return new Promise(async (resolve, reject) => {
         try {
-            console.log('Call func doctorInfor', inputData)
-            if (!inputData.doctorId || !inputData.contentHTML || !inputData.contentMarkdown || !inputData.action
-                || !inputData.selectedPrice || !inputData.selectedPayment || !inputData.selectedProvince) {
+            let checkObj = checkRequireFields(inputData);
+            if (checkObj.isValid === false) {
                 resolve({
                     errCode: 1,
-                    errMessage: 'Missing parameter'
+                    errMessage: `Missing parameter: ${checkObj.element}`
                 })
 
             } else {
@@ -101,8 +117,9 @@ let saveInforDoctorService = (inputData) => {
                     doctorInfor.nameClinic = inputData.nameClinic;
                     doctorInfor.addressClinic = inputData.addressClinic;
                     doctorInfor.note = inputData.note;
-
-                    await doctorInfor.save();
+                    doctorInfor.specialtyId = inputData.specialtyId,
+                        doctorInfor.clinicId = inputData.clinicId,
+                        await doctorInfor.save();
                 } else {
                     await db.Doctor_Info.create({
                         doctorId: inputData.doctorId,
@@ -112,6 +129,8 @@ let saveInforDoctorService = (inputData) => {
                         nameClinic: inputData.nameClinic,
                         addressClinic: inputData.addressClinic,
                         note: inputData.note,
+                        specialtyId: inputData.specialtyId,
+                        clinicId: inputData.clinicId,
                     })
                 }
                 resolve({

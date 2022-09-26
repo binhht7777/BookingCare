@@ -95,7 +95,8 @@
     },
     "homepage": {
         "outstanding_doctor": "Last week's featured doctor",
-        "more_infor": "More Information"
+        "more_infor": "More Information",
+        "specialty-popular": "Popular Specialties"
     },
     "manage-schedule": {
         "title": "Manage doctor's examination plan",
@@ -128,7 +129,7 @@
             "reason": "Reason",
             "confirm": "Confirm",
             "cancel": "Cancel",
-            "bookingFree":"Booking Free",
+            "bookingFree": "Booking Free",
             "price": "Price: "
         }
     },
