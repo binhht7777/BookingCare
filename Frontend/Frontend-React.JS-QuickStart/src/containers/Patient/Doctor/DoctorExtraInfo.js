@@ -21,7 +21,14 @@ class DoctorExtraInfo extends Component {
     }
 
     async componentDidMount() {
-
+        if (this.props.doctorId) {
+            let res = await getExtraInfoDoctorById(this.props.doctorId);
+            if (res && res.errCode === 0) {
+                this.setState({
+                    extraInfo: res.data ? res.data : []
+                })
+            }
+        }
 
     }
 
@@ -36,7 +43,6 @@ class DoctorExtraInfo extends Component {
                     extraInfo: res.data ? res.data : []
                 })
             }
-
         }
     }
 
