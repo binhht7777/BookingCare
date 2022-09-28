@@ -117,9 +117,9 @@ let saveInforDoctorService = (inputData) => {
                     doctorInfor.nameClinic = inputData.nameClinic;
                     doctorInfor.addressClinic = inputData.addressClinic;
                     doctorInfor.note = inputData.note;
-                    doctorInfor.specialtyId = inputData.specialtyId,
-                        doctorInfor.clinicId = inputData.clinicId,
-                        await doctorInfor.save();
+                    doctorInfor.specialtyId = inputData.specialtyId;
+                    doctorInfor.clinicId = inputData.clinicId;
+                    await doctorInfor.save();
                 } else {
                     await db.Doctor_Info.create({
                         doctorId: inputData.doctorId,
@@ -377,6 +377,47 @@ let getProfileDoctorByIdService = (doctorId) => {
     })
 }
 
+
+let getListPatientForDoctorService = (doctorId, date) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+
+            if (!doctorId || !date) {
+                resolve({
+                    errCode: 1,
+                    errMessage: 'Missing parameter_____________'
+                })
+            } else {
+                let data = await db.Booking.findAll({
+                    where: { doctorId: doctorId, date: date, statusId: 'S2' },
+                    include: [
+                        {
+                            model: db.User, as: 'patientData',
+                            attributes: ['email', 'firstName', 'address', 'gender'],
+                            include: [
+                                { model: db.Allcode, as: 'genderData', attributes: ['valueEn', 'valueVi'] }
+                            ],
+                        },
+                    ],
+                    raw: false,
+                    nest: true
+                })
+                // if (data && data.image) {
+                //     data.image = new Buffer(data.image, 'base64').toString('binary');
+                // }
+                // if (!data) data = {}
+
+                resolve({
+                    errCode: 0,
+                    data: data
+                })
+            }
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
+
 module.exports = {
     getTopDoctorService: getTopDoctorService,
     getAllDoctorsService: getAllDoctorsService,
@@ -386,4 +427,5 @@ module.exports = {
     getScheduleDoctorByDateService: getScheduleDoctorByDateService,
     getExtraInfoDoctorByIdService: getExtraInfoDoctorByIdService,
     getProfileDoctorByIdService: getProfileDoctorByIdService,
+    getListPatientForDoctorService: getListPatientForDoctorService,
 }
